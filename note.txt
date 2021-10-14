@@ -1,0 +1,6 @@
+1. It takes longer time => GA
+2. Each run is not resulting same value => FGA
+3. It is diffucult to extract secret in stego image => chromosome
+4. It has no improvement in PSNR => Genes => ilustrasi figur di tulisan nanti. di jelaskan. sudah ada persetujuan genesnya.
+
+dataset = cp -> southern california university

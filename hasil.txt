@@ -1,0 +1,15 @@
+lena - cover , xxx2 - secret
+hasil terbaik : 
+pada iterasi :  5
+chromosome terpilih [1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1, 1, 1, 0, 1, 1, 0, 0, 1, 0, 1]
+
+lena - cover  xxx2 - secret
+hasil terbaik : 
+pada iterasi :  5
+chromosome terpilih 
+1010111111000000111000001001011101100101
+
+tomat - cover, xxx2 - secret
+hasil terbaik : 
+pada iterasi :  24
+chromosome terpilih [0, 1, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0]
