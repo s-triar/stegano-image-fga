@@ -185,12 +185,13 @@ class Fga():
     def calculateFitness(self, individu):
         # print("individu", individu)
         bins = [self.startPointX, self.startPointY, self.scanDir, self.shiftingSecretData, self.repeatShifting,self.swapping,self.swappingStartPoint,self.swappingDirection,self.dataPolarity]
-        intChr = steg.extractKromosom(bins,individu)
+        # intChr = steg.extractKromosom(bins,individu)
         # print("int Chromosome", intChr)
-        secret_bin = steg.doStegano(self.secret.copy(),intChr)
+        # secret_bin = steg.doStegano(self.secret.copy(),intChr)
         # img_bin = self.flat_img.copy()[:len(secret_bin)]
-
-        img_bin = steg.startPointCover([intChr[0],intChr[1]],intChr[2],self.img[:-1,:].copy())[:len(secret_bin)]
+        secret_bin = steg.combineImgBinWithSecretBin(self.flat_img.copy(), self.secret.copy(), self.coverWidthBin, self.coverHeightBin,self.payloadType,bins, individu)
+        img_bin = self.flat_img.copy()
+        # img_bin = steg.startPointCover([intChr[0],intChr[1]],intChr[2],self.img[:-1,:].copy())[:len(secret_bin)]
         # print(len(img_bin),len(secret_bin))
         c= np.logical_xor(img_bin,secret_bin)
         # print("c",c)
@@ -274,20 +275,13 @@ class Fga():
 
         
         bins = [self.startPointX, self.startPointY, self.scanDir, self.shiftingSecretData, self.repeatShifting,self.swapping,self.swappingStartPoint,self.swappingDirection,self.dataPolarity]
-        extractKromosom = steg.extractKromosom(bins, self.best)
-        # print("secret cp shap",self.secret.copy().shape)
-        secretRearranged = steg.doStegano(self.secret.copy(),extractKromosom)
-        # img_bin = self.img.flatten()
-        # print("img shape",self.img.shape)
-        img_bin = steg.startPointCover([extractKromosom[0],extractKromosom[1]],extractKromosom[2],self.img.copy()[:-1,:])
-        print(extractKromosom)
-        emb = np.concatenate((secretRearranged, img_bin.copy()[len(secretRearranged):]))
-        # print("emb",emb.shape)
-        # print("img [:-1] shp",self.img.copy()[:-1,:].shape)
-        emb = steg.deStartPointCover([extractKromosom[0],extractKromosom[1]],extractKromosom[2],emb, self.img.copy()[:-1,:].shape)
-        # print("emb b4 flt",emb.shape)
-        emb = emb.flatten()
-        # print("emb flt",emb.shape)
-        emb = np.concatenate((emb, self.img.copy()[-1,:].flatten()))
-        # print("emb flt concate",emb.shape)
-        return np.concatenate((emb.copy()[:-(len(self.best)+len(self.coverWidthBin)+len(self.coverHeightBin)+1)], self.best, self.coverWidthBin, self.coverHeightBin,[self.payloadType]), axis=None), self.bestAt, self.best
+        combined = steg.combineImgBinWithSecretBin(self.img.copy(), self.secret.copy(), self.coverWidthBin, self.coverHeightBin,self.payloadType,bins, self.best)
+        return combined, self.bestAt, self.best
+        # extractKromosom = steg.extractKromosom(bins, self.best)
+        # secretRearranged = steg.doStegano(self.secret.copy(),extractKromosom)
+        # img_bin = steg.startPointCover([extractKromosom[0],extractKromosom[1]],extractKromosom[2],self.img.copy()[:-1,:])
+        # emb = np.concatenate((secretRearranged, img_bin.copy()[len(secretRearranged):]))
+        # emb = steg.deStartPointCover([extractKromosom[0],extractKromosom[1]],extractKromosom[2],emb, self.img.copy()[:-1,:].shape)
+        # emb = emb.flatten()
+        # emb = np.concatenate((emb, self.img.copy()[-1,:].flatten()))
+        # return np.concatenate((emb.copy()[:-(len(self.best)+len(self.coverWidthBin)+len(self.coverHeightBin)+1)], self.best, self.coverWidthBin, self.coverHeightBin,[self.payloadType]), axis=None), self.bestAt, self.best

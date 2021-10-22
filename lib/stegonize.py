@@ -160,4 +160,7 @@ def compareSecret(before,after):
     c = np.logical_xor(before,after)
     return np.sum(c==True)
 
+def combineImgBinWithSecretBin(flat_img,secret,coverWidthBin,coverHeightBin,payloadType, bins, indiv):
+    secretRearranged = doStegano(secret,extractKromosom(bins,indiv))
+    return np.concatenate((secretRearranged, flat_img[len(secretRearranged):-(len(indiv)+len(coverWidthBin)+len(coverHeightBin)+1)], indiv, coverWidthBin, coverHeightBin,[payloadType]), axis=None)
 

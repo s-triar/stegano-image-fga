@@ -182,12 +182,11 @@ class Fga():
 
 
     def calculateFitness(self, individu):
-        # print("individu", individu)
         bins = [self.shiftingSecretData, self.repeatShifting,self.swapping,self.swappingStartPoint,self.swappingDirection,self.dataPolarity]
-        intChr = steg.extractKromosom(bins,individu)
-        # print("int Chromosome", intChr)
-        secret_bin = steg.doStegano(self.secret.copy(),intChr)
-        img_bin = self.flat_img.copy()[:len(secret_bin)]
+        # intChr = steg.extractKromosom(bins,individu)
+        # secret_bin = steg.doStegano(self.secret.copy(),intChr)
+        secret_bin = steg.combineImgBinWithSecretBin(self.flat_img.copy(), self.secret.copy(), self.coverWidthBin, self.coverHeightBin,self.payloadType,bins, individu)
+        img_bin = self.flat_img.copy()
         # print(len(img_bin),len(secret_bin))
         c= np.logical_xor(img_bin,secret_bin)
         # print("c",c)
@@ -273,8 +272,7 @@ class Fga():
 
         
         bins = [self.shiftingSecretData, self.repeatShifting,self.swapping,self.swappingStartPoint,self.swappingDirection,self.dataPolarity]
-        secretRearranged = steg.doStegano(self.secret.copy(),steg.extractKromosom(bins,self.best))
-        # img_bin = self.flat_img.copy()[:len(secretRearranged)]
-        extractKromosom = steg.extractKromosom(bins, self.best)
-        print(extractKromosom)
-        return np.concatenate((secretRearranged, self.flat_img.copy()[len(secretRearranged):-(len(self.best)+len(self.coverWidthBin)+len(self.coverHeightBin)+1)], self.best, self.coverWidthBin, self.coverHeightBin,[self.payloadType]), axis=None), self.bestAt, self.best
+        # secretRearranged = steg.doStegano(self.secret.copy(),steg.extractKromosom(bins,self.best))
+        # return np.concatenate((secretRearranged, self.flat_img.copy()[len(secretRearranged):-(len(self.best)+len(self.coverWidthBin)+len(self.coverHeightBin)+1)], self.best, self.coverWidthBin, self.coverHeightBin,[self.payloadType]), axis=None), self.bestAt, self.best
+        combined = steg.combineImgBinWithSecretBin(self.flat_img.copy(), self.secret.copy(), self.coverWidthBin, self.coverHeightBin,self.payloadType,bins, self.best)
+        return combined, self.bestAt, self.best

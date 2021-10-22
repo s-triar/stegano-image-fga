@@ -12,7 +12,7 @@ def DoRun(path, payload_type, payload_file_name, cover_file_name, path_payload_,
     file_cover = cover_file_name
     path_cover = path_cover_ #os.path.join(path, 'data_test', file_cover)
     path_payload = path_payload_ #os.path.join(path, 'data_test', file_payload)
-    path_hasil = os.path.join(path,'exp_with_sp_0-3_0-3_1000_20.csv')
+    path_hasil = os.path.join(path,'exp_with_sp_with-chr_0-3_0-3_1000_20.csv')
 
     payloadBiner = None
     payloadShape = None
@@ -43,7 +43,7 @@ def DoRun(path, payload_type, payload_file_name, cover_file_name, path_payload_,
     path_save_grey_cover = os.path.join(path, 'data_hasil_strt_pt', 'grey','grey_st_pt_cover_'+"".join(file_payload.split(".")[:-1])+"_"+file_cover)
     ld.save_img(coverImage,path_save_grey_cover)
     coverBin = ld.img_to_bin(coverImage)
-    obFga = fga(0.3,0.3,1000,20,coverBin,twoDPayload, payloadShape, payloadT, os.path.join(path,'logs_strt_pt',"".join(file_payload.split(".")[:-1])+'-_-'+"".join(file_cover.split(".")[:-1])+'.csv'))
+    obFga = fga(0.3,0.3,1000,20,coverBin,twoDPayload, payloadShape, payloadT, os.path.join(path,'logs_strt_pt_with_chr',"".join(file_payload.split(".")[:-1])+'-_-'+"".join(file_cover.split(".")[:-1])+'.csv'))
     newBinImg, bestAt, best = obFga.Run()
     path_save_stego = os.path.join(path, 'data_hasil_strt_pt', 'grey','grey_st_pt_stgo_'+"".join(file_payload.split(".")[:-1])+"_"+file_cover)
     # print("newBinImg",newBinImg, newBinImg.shape)
@@ -54,7 +54,7 @@ def DoRun(path, payload_type, payload_file_name, cover_file_name, path_payload_,
     print("PSNR: ",psnr)
     best_str = "".join([str(yy) for yy in best])
     lg.writeResult(path_hasil,
-        file_cover, file_payload, path_cover, path_payload, psnr, payloadType, payloadT, 'fga first concept', bestAt, best_str,path_save_stego)
+        file_cover, file_payload, path_cover, path_payload, psnr, payloadType, payloadT, 'fga srtr pt + with chr', bestAt, best_str,path_save_stego)
 
 if __name__ == "__main__":
     path = os.path.dirname(os.path.abspath(__file__))

@@ -219,3 +219,14 @@ def compareSecret(before,after):
     return np.sum(c==True)
 
 
+
+def combineImgBinWithSecretBin(img,secret,coverWidthBin,coverHeightBin,payloadType, bins, indiv):
+    extractKromosom = extractKromosom(bins, indiv)
+    secretRearranged = doStegano(secret,extractKromosom)
+    img_bin = startPointCover([extractKromosom[0],extractKromosom[1]],extractKromosom[2],img.copy()[:-1,:])
+    emb = np.concatenate((secretRearranged, img_bin.copy()[len(secretRearranged):]))
+    emb = deStartPointCover([extractKromosom[0],extractKromosom[1]],extractKromosom[2],emb, img.copy()[:-1,:].shape)
+    emb = emb.flatten()
+    emb = np.concatenate((emb, img.copy()[-1,:].flatten()))
+    return np.concatenate((emb.copy()[:-(len(indiv)+len(coverWidthBin)+len(coverHeightBin)+1)], indiv, coverWidthBin, coverHeightBin,[payloadType]), axis=None)
+
