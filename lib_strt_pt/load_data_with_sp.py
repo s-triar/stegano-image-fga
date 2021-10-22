@@ -6,10 +6,6 @@ import math
 
 def load_image(path):
     imgGray = cv2.imread(path,0)
-    # print(imgGray.shape)
-    # cv2.imshow('payload', imgGray)
-    # cv2.waitKey(0)
-    # cv2.destroyAllWindows()
     return imgGray
 
 def save_img(img,path):
@@ -48,11 +44,13 @@ def binary_to_image(secret, shape):
                 t=t+str(it)
             a[i,j]=int(t,2)
             idx = idx+8
-    print(a)
-    print(a.shape)
-    # cv2.imshow('payload', a)
-    # cv2.waitKey(0)
-    # cv2.destroyAllWindows()
+    # print(a)
+    # print(a.shape)
+    cv2.imshow('payload', a)
+    # add wait key. window waits until user presses a key
+    cv2.waitKey(0)
+    # and finally destroy/close all open windows
+    cv2.destroyAllWindows()
     return a
         
 def binary_to_text(secret):

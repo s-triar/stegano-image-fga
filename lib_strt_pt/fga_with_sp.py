@@ -2,7 +2,7 @@
 import math
 import random
 import numpy as np
-from . import stegonize as steg
+from . import stegonize_with_sp as steg
 import csv
 
 
@@ -31,13 +31,14 @@ class Fga():
         self.diversityRate = diversityRate
         self.maxIter = maxIter
         self.jumlahPopulasi = jumlahPopulasi
-        self.populasi, self.blueprint, self.nKromosom, self.shiftingSecretData, self.repeatShifting,self.swapping,self.swappingStartPoint,self.swappingDirection,self.dataPolarity = self.generatePopulationInit(self.jumlahPopulasi)
+        self.populasi, self.blueprint, self.nKromosom, self.startPointX, self.startPointY, self.scanDir,self.shiftingSecretData, self.repeatShifting,self.swapping,self.swappingStartPoint,self.swappingDirection,self.dataPolarity = self.generatePopulationInit(self.jumlahPopulasi)
         self.best = None
         self.bestScore = 999999999999999
         self.bestAt=99999999999999
         self.dataFitness=[]
 
     def generateCoverBin(self, coverShape, secretShape,payloadType):
+        print("payloadType",payloadType)
         if(payloadType==1): #image
             binX = [0 for i in range(0, len(bin(coverShape[0]-1)[2:]))]
             binY = [0 for i in range(0, len(bin(coverShape[1]-1)[2:]))]
@@ -70,7 +71,7 @@ class Fga():
         # swappingDirection = 1
         # dataPolarity = 4
         # nKromosom = shiftingSecretData+repeatShifting+swapping+swappingStartPoint+swappingDirection+dataPolarity
-        nKromosom, shiftingSecretData, repeatShifting,swapping,swappingStartPoint,swappingDirection,dataPolarity = steg.generateKromosom(self.secret.shape[0],self.secret.shape[1])
+        nKromosom, start_point_x, start_point_y, scan_dir, shiftingSecretData, repeatShifting,swapping,swappingStartPoint,swappingDirection,dataPolarity = steg.generateKromosom(self.secret.shape[0],self.secret.shape[1], (self.img[:-1,:].copy()).shape)
         populasi = []
         for i in range(jumlahPopulasi):
             individu = []
@@ -80,7 +81,7 @@ class Fga():
         blueprint = []
         for i in range(nKromosom):
             blueprint.append(0.5)
-        return populasi, blueprint, nKromosom, shiftingSecretData, repeatShifting,swapping,swappingStartPoint,swappingDirection,dataPolarity
+        return populasi, blueprint, nKromosom, start_point_x, start_point_y, scan_dir, shiftingSecretData, repeatShifting,swapping,swappingStartPoint,swappingDirection,dataPolarity
 
     def generateBlueprint(self, population):
         blueprint = [0 for i in (population[0])]
@@ -183,11 +184,13 @@ class Fga():
 
     def calculateFitness(self, individu):
         # print("individu", individu)
-        bins = [self.shiftingSecretData, self.repeatShifting,self.swapping,self.swappingStartPoint,self.swappingDirection,self.dataPolarity]
+        bins = [self.startPointX, self.startPointY, self.scanDir, self.shiftingSecretData, self.repeatShifting,self.swapping,self.swappingStartPoint,self.swappingDirection,self.dataPolarity]
         intChr = steg.extractKromosom(bins,individu)
         # print("int Chromosome", intChr)
         secret_bin = steg.doStegano(self.secret.copy(),intChr)
-        img_bin = self.flat_img.copy()[:len(secret_bin)]
+        # img_bin = self.flat_img.copy()[:len(secret_bin)]
+
+        img_bin = steg.startPointCover([intChr[0],intChr[1]],intChr[2],self.img[:-1,:].copy())[:len(secret_bin)]
         # print(len(img_bin),len(secret_bin))
         c= np.logical_xor(img_bin,secret_bin)
         # print("c",c)
@@ -234,10 +237,9 @@ class Fga():
             self.populasi[index] = indiv #mengganti populasi dengan hasil random injection
 
     def Run(self):
-       
+        
         iterasi = 0
         while iterasi < self.maxIter:
-            
             point1 = random.randint(0, self.jumlahPopulasi-1)
             p1 = self.populasi[point1]
             point2 = random.randint(0, self.jumlahPopulasi-1)
@@ -261,7 +263,6 @@ class Fga():
             writer = csv.writer(f)
             writer.writerow([iterasi,"".join([str(ki) for ki in self.best]),self.bestScore])
             f.close()
-
             iterasi+=1
             # memanggil method random injection setiap 10 iterasi sekali
             if(iterasi%10==0):
@@ -272,9 +273,21 @@ class Fga():
         print("chromosome terpilih", self.best)
 
         
-        bins = [self.shiftingSecretData, self.repeatShifting,self.swapping,self.swappingStartPoint,self.swappingDirection,self.dataPolarity]
-        secretRearranged = steg.doStegano(self.secret.copy(),steg.extractKromosom(bins,self.best))
-        # img_bin = self.flat_img.copy()[:len(secretRearranged)]
+        bins = [self.startPointX, self.startPointY, self.scanDir, self.shiftingSecretData, self.repeatShifting,self.swapping,self.swappingStartPoint,self.swappingDirection,self.dataPolarity]
         extractKromosom = steg.extractKromosom(bins, self.best)
+        # print("secret cp shap",self.secret.copy().shape)
+        secretRearranged = steg.doStegano(self.secret.copy(),extractKromosom)
+        # img_bin = self.img.flatten()
+        # print("img shape",self.img.shape)
+        img_bin = steg.startPointCover([extractKromosom[0],extractKromosom[1]],extractKromosom[2],self.img.copy()[:-1,:])
         print(extractKromosom)
-        return np.concatenate((secretRearranged, self.flat_img.copy()[len(secretRearranged):-(len(self.best)+len(self.coverWidthBin)+len(self.coverHeightBin)+1)], self.best, self.coverWidthBin, self.coverHeightBin,[self.payloadType]), axis=None), self.bestAt, self.best
+        emb = np.concatenate((secretRearranged, img_bin.copy()[len(secretRearranged):]))
+        # print("emb",emb.shape)
+        # print("img [:-1] shp",self.img.copy()[:-1,:].shape)
+        emb = steg.deStartPointCover([extractKromosom[0],extractKromosom[1]],extractKromosom[2],emb, self.img.copy()[:-1,:].shape)
+        # print("emb b4 flt",emb.shape)
+        emb = emb.flatten()
+        # print("emb flt",emb.shape)
+        emb = np.concatenate((emb, self.img.copy()[-1,:].flatten()))
+        # print("emb flt concate",emb.shape)
+        return np.concatenate((emb.copy()[:-(len(self.best)+len(self.coverWidthBin)+len(self.coverHeightBin)+1)], self.best, self.coverWidthBin, self.coverHeightBin,[self.payloadType]), axis=None), self.bestAt, self.best
