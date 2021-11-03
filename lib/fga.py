@@ -198,7 +198,7 @@ class Fga():
         n=len(fitness)
         for i in range(n):
             for j in range(0,n-i-1):
-                if(fitness[j] < fitness[j+1]):
+                if(fitness[j] > fitness[j+1]):
                     fitness[j], fitness[j+1] = fitness[j+1],fitness[j]
                     individu[j], individu[j+1] = individu[j+1], individu[j]
                     populasi[j], populasi[j+1] = populasi[j+1], populasi[j]

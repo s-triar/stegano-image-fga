@@ -1,37 +1,33 @@
-from lib_strt_pt.fga_with_sp import Fga as fga
-import lib_strt_pt.stegonize_with_sp as steg
-# import lib_strt_pt.image_with_sp as t_img
-import numpy as np
-import lib_strt_pt.load_data_with_sp as ld
+import lib.stegonize as steg
+import lib.load_data as ld
 import os
+import cv2
+import numpy as np
+
 
 if __name__ == "__main__":
-    asli = [[1,1,0,1,1,1,0],
-            [1,1,1,1,0,1,0],
-            [0,0,0,0,1,0,1],
-            [0,0,1,0,1,0,1],
-            [0,0,1,0,1,0,1],
-            [0,0,1,0,1,1,1],
-            [0,0,1,0,1,1,1],
-            [0,0,1,1,1,1,0]]
-    secret_asli = [[0,1,1,1,0],[1,1,0,1,0]]
-    a = np.array(asli, dtype=np.int8)
-    secret = np.array(secret_asli, dtype=np.int8)
-    print('asli')
-    print(a)
-    extractKromosom = [3,2,2,3,3,3,4,0,'1010']
-    secretRearranged = steg.doStegano(secret,extractKromosom)
-    img_bin = steg.startPointCover([extractKromosom[0],extractKromosom[1]],extractKromosom[2],a.copy()[:-1,:])
-    emb = np.concatenate((secretRearranged, img_bin.copy()[len(secretRearranged):]))
-    emb = steg.deStartPointCover([extractKromosom[0],extractKromosom[1]],extractKromosom[2],emb, a.copy()[:-1,:].shape)
-    emb = emb.flatten()
-    emb = np.concatenate((emb, (a.copy()[-1,:]).flatten()))
-    emb = np.reshape(emb, a.shape)
-    print("emb")
-    print(emb)
-
-    flat_stego_bin = steg.startPointCover([extractKromosom[0],extractKromosom[1]],extractKromosom[2],emb.copy()[:-1,:])
-    rearrangeSecretFromStego = flat_stego_bin[:secret.shape[0]*secret.shape[1]]
-    secret_ex = steg.doReverseStego(extractKromosom,rearrangeSecretFromStego, (secret.shape[0],secret.shape[1]))
-    print("secret_ex")
-    print(secret_ex)
+    path = os.path.dirname(os.path.abspath(__file__))
+    payloadType = 'image' # image, text, binary_in_text
+    file_payload = 'grey_150x150_4.1.06.tiff'
+    file_stego = 'grey_st_pt_stgo_grey_150x150_4106_4.2.07.tiff'
+    file_cover = '4.2.07.tiff'
+    path_stego = os.path.join(path, 'data_hasil_strt_pt','img', file_stego)
+    path_payload = os.path.join(path, 'data_test','payload-img', file_payload)
+    path_cover = os.path.join(path, 'data_test','cover-min', file_cover)
+    stegoImage = ld.load_image(path_stego)
+    stegoBin = ld.img_as_bin_img(stegoImage)
+    stegoBinCp = (stegoBin.copy()).flatten()
+    stegoBinCp0=len(stegoBinCp[stegoBinCp==0])
+    stegoBinCp1=len(stegoBinCp[stegoBinCp==255])
+    print("stego bin", stegoBinCp0,stegoBinCp1)
+    payloadImage = ld.load_image(path_payload)
+    payloadBin = ld.img_as_bin_img(payloadImage)
+    coverImage = ld.load_image(path_cover)
+    coverBin = ld.img_as_bin_img(coverImage)
+    imgDiff = ld.imgs_diff(coverBin,stegoBin)
+    cv2.imshow('payload', payloadBin)
+    cv2.imshow('cover', coverBin)
+    cv2.imshow('stego', stegoBin)
+    cv2.imshow('stego | cover diff', imgDiff)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()

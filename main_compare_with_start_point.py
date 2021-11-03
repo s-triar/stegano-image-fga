@@ -13,8 +13,8 @@ if __name__ == "__main__":
     path = os.path.dirname(os.path.abspath(__file__))
     
     payloadType = 'binary_in_text' # image, text, binary_in_text
-    file_payload = 'random-binary_1Kb.txt'
-    file_stego = 'grey_st_pt_stgo_random-binary_1Kb_boat.512.tiff'
+    file_payload = 'random-binary_10Kb.txt'
+    file_stego = 'coba_buble_grey_st_pt_stgo_random-binary_10Kb_4.2.03.tiff'
     path_stego = os.path.join(path, 'data_hasil_strt_pt','grey', file_stego)
     path_payload = os.path.join(path, 'data_test','payload', file_payload)
 
@@ -29,6 +29,7 @@ if __name__ == "__main__":
     print(stegoImage.shape)
     print(x_stego_bin, y_stego_bin)
     payloadType = flat_stego_bin[-1] # image 1, text 0, binary_in_text 0
+    print("payloadType",payloadType)
     genSizeHSecret=0
     genSizeWSecret=0
     wsecret_asli=0

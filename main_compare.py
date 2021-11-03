@@ -12,17 +12,18 @@ def binArrayToInt(ar):
 if __name__ == "__main__":
     path = os.path.dirname(os.path.abspath(__file__))
     
-    payloadType = 'binary_in_text' # image, text, binary_in_text
-    file_payload = 'random-binary_1Kb.txt'
-    file_stego = 'grey_stgo_random-binary_1Kb_4.2.05.tiff'
-    path_stego = os.path.join(path, 'data_hasil','grey', file_stego)
-    path_payload = os.path.join(path, 'data_test','payload', file_payload)
+    payloadType = 'image' # image, text, binary_in_text
+    file_payload = 'grey_150x150_4.1.06.tiff'
+    file_stego = 'grey_stgo_grey_150x150_4106_boat.512.tiff'
+    path_stego = os.path.join(path, 'data_hasil','img', file_stego)
+    path_payload = os.path.join(path, 'data_test','payload-img', file_payload)
 
     payloadBiner = None
 
     stegoImage = ld.load_image(path_stego)
     stegoBin = ld.img_to_bin(stegoImage)
     flat_stego_bin = stegoBin.flatten()
+    print(flat_stego_bin[-70:])
     x_stego_bin = bin(stegoImage.shape[0]-1)[2:]
     y_stego_bin = bin(stegoImage.shape[1]-1)[2:]
     shapeKromosom = None
@@ -46,9 +47,9 @@ if __name__ == "__main__":
         hsecret_asli = binArrayToInt(genSizeHSecret)
         print("size secret asli",wsecret_asli,hsecret_asli)
         wh = ld.findFactor((wsecret_asli,hsecret_asli))
-        
-        wsecret = binArrayToInt(wh[0])
-        hsecret = binArrayToInt(wh[1])
+        print(wh)
+        wsecret = wh[0]
+        hsecret = wh[1]
         print("size secret", wsecret,hsecret)
     else:
         shapeKromosom = len(bin((stegoImage.shape[0]*stegoImage.shape[1])-1)[2:])

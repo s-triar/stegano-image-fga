@@ -189,7 +189,7 @@ class Fga():
         # print("int Chromosome", intChr)
         # secret_bin = steg.doStegano(self.secret.copy(),intChr)
         # img_bin = self.flat_img.copy()[:len(secret_bin)]
-        secret_bin = steg.combineImgBinWithSecretBin(self.flat_img.copy(), self.secret.copy(), self.coverWidthBin, self.coverHeightBin,self.payloadType,bins, individu)
+        secret_bin = steg.combineImgBinWithSecretBin(self.img.copy(), self.secret.copy(), self.coverWidthBin, self.coverHeightBin,self.payloadType,bins, individu)
         img_bin = self.flat_img.copy()
         # img_bin = steg.startPointCover([intChr[0],intChr[1]],intChr[2],self.img[:-1,:].copy())[:len(secret_bin)]
         # print(len(img_bin),len(secret_bin))
@@ -203,7 +203,7 @@ class Fga():
         n=len(fitness)
         for i in range(n):
             for j in range(0,n-i-1):
-                if(fitness[j] < fitness[j+1]):
+                if(fitness[j] > fitness[j+1]):
                     fitness[j], fitness[j+1] = fitness[j+1],fitness[j]
                     individu[j], individu[j+1] = individu[j+1], individu[j]
                     populasi[j], populasi[j+1] = populasi[j+1], populasi[j]

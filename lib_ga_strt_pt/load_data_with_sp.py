@@ -6,10 +6,6 @@ import math
 
 def load_image(path):
     imgGray = cv2.imread(path,0)
-    # print(imgGray.shape)
-    # cv2.imshow('payload', imgGray)
-    # cv2.waitKey(0)
-    # cv2.destroyAllWindows()
     return imgGray
 
 def save_img(img,path):
@@ -38,20 +34,6 @@ def img_to_bin(img):
             a[ix,iy] = int(bin(img[ix,iy])[-1])
     return a
 
-def imgs_diff(img1,img2):
-    a = np.empty(shape=img1.shape, dtype=np.uint8)
-    for ix in range(0, img1.shape[0]):
-        for iy in range(0, img1.shape[1]):
-            a[ix,iy] = 255 if img1[ix,iy] == img2[ix,iy] else 0
-    return a
-
-def img_as_bin_img(img):
-    a = np.empty(shape=img.shape, dtype=np.uint8)
-    for ix in range(0, img.shape[0]):
-        for iy in range(0, img.shape[1]):
-            a[ix,iy] = 255 if int(bin(img[ix,iy])[-1]) == 1 else 0
-    return a
-
 def binary_to_image(secret, shape):
     a = np.empty(shape=shape, dtype=np.uint8)
     idx =0
@@ -62,11 +44,13 @@ def binary_to_image(secret, shape):
                 t=t+str(it)
             a[i,j]=int(t,2)
             idx = idx+8
-    print(a)
-    print(a.shape)
-    # cv2.imshow('payload', a)
-    # cv2.waitKey(0)
-    # cv2.destroyAllWindows()
+    # print(a)
+    # print(a.shape)
+    cv2.imshow('payload', a)
+    # add wait key. window waits until user presses a key
+    cv2.waitKey(0)
+    # and finally destroy/close all open windows
+    cv2.destroyAllWindows()
     return a
         
 def binary_to_text(secret):

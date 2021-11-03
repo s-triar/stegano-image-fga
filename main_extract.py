@@ -12,8 +12,8 @@ if __name__ == "__main__":
     path = os.path.dirname(os.path.abspath(__file__))
     
 
-    file_stego = 'grey_stgo_random-binary_1Kb_4.2.03.tiff'
-    path_stego = os.path.join(path, 'data_hasil','grey', file_stego)
+    file_stego = 'grey_stgo_grey_150x150_4106_boat.512.tiff'
+    path_stego = os.path.join(path, 'data_hasil','img', file_stego)
 
     payloadBiner = None
 
@@ -71,7 +71,7 @@ if __name__ == "__main__":
     
     if(payloadType == 1):
         sec_img = ld.binary_to_image(secret_flat,(wsecret_asli,hsecret_asli))
-        path_sv = os.path.join(path, 'data_hasil','temp', 'temp_sec.jpg')
+        path_sv = os.path.join(path, 'data_hasil','temp', 'temp_sec.tiff')
         ld.save_img(sec_img,path_sv)
     else:
         ld.binary_to_text(secret_flat)
