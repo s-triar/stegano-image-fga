@@ -74,6 +74,4 @@ if __name__ == "__main__":
                 DoRun(path, payloadType, f.split('\\')[-1], file_cover, f, cr)
             except Exception as ex:
                 print(ex)
-            break
-        break
     

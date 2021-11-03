@@ -69,11 +69,9 @@ if __name__ == "__main__":
     for cr in glob.glob(list_cover):
         file_cover = cr.split('\\')[-1]
         for f in glob.glob(raw):
-                print(f.split('\\')[-1], f)
-            # try:
+            print(f.split('\\')[-1], f)
+            try:
                 DoRun(path, payloadType, f.split('\\')[-1], file_cover, f, cr)
-            # except Exception as ex:
+            except Exception as ex:
                 print(ex)
-                break
-        break
-    
+  
